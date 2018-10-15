@@ -1,24 +1,33 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public class Eval {
+
+  static Map<String, Integer> idMap = new HashMap<>();
 
   public static class EvalStm implements Stm.Visitor<Void> {
 
     public Void visit(Stm.CompoundStm s) {
-      throw new UnsupportedOperationException("Not implemented!");
+      s.stm1.accept(this);
+      s.stm2.accept(this);
+      return null;
     }
 
     public Void visit(Stm.AssignStm s) {
-      throw new UnsupportedOperationException("Not implemented!");
+      idMap.put(s.id, s.exp.accept(new EvalExp()));
+      return null;
     }
 
     public Void visit(Stm.PrintStm s) {
-      throw new UnsupportedOperationException("Not implemented!");
+      s.exps.forEach(exp -> System.out.println(exp.accept(new EvalExp())));
+      return null;
     }
   }
 
   public static class EvalExp implements Exp.Visitor<Integer> {
 
     public Integer visit(Exp.IdExp e) {
-
+      return idMap.get(e.id);
     }
 
     public Integer visit(Exp.NumExp e) {
@@ -45,7 +54,9 @@ public class Eval {
     }
 
     public Integer visit(Exp.EseqExp e) {
+      e.stm.accept(new EvalStm());
 
+      return e.exp.accept(this);
     }
   }
 }

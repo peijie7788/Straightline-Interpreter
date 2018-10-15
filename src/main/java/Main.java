@@ -36,7 +36,8 @@ public class Main {
       System.out.println();
 
       System.out.println("Interpretiere eingelesenes Programm.");
-      // TODO
+      Eval.EvalStm evalStmVisitor = new Eval.EvalStm();
+      stm.accept(evalStmVisitor);
 
     } catch (FileNotFoundException e) {
       throw new Error("File not found: " + filename);
